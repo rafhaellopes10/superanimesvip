@@ -1,0 +1,46 @@
+/* Usando Metodo toUpperCase no usuario Login, para que consegue deixa o campo maiúsculo,
+puxando do banco mesmo estando como minusculo, onde deve declarar a variavel e adcionar no jButton  */
+
+
+package visão;
+
+import controle.CaixaAlta;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import modeloConection.ConexaoBD;
+
+public class FrmLogin extends javax.swing.JFrame {
+
+    ConexaoBD con = new ConexaoBD();
+
+    public FrmLogin() {
+        initComponents();
+        con.conexao();
+        
+        //toUpperCase
+        
+        JTextField texto = new JTextField();
+        texto.setDocument(new CaixaAlta());
+        jTextFieldUsuario.setDocument(new CaixaAlta());
+
+    }
+
+  private void JButtonAcessarActionPerformed(java.awt.event.ActionEvent evt) {                                               
+        try {
+            con.executaSql("select *from usuario where UPPER(usuarioUsuario)='" + jTextFieldUsuario.getText() + "'");
+           
+            if (con.rs.next() && con.rs.getString("usuarioSenha").toUpperCase().equals(jPasswordFieldSenha.getText().toUpperCase())) {
+               
+               FrmPrincipal tela = new FrmPrincipal(jTextFieldUsuario.getText());
+                tela.setVisible(true);
+                dispose();
+
+            } else {
+                JOptionPane.showMessageDialog(rootPane, "Usuário ou Senha Inválidos");
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(rootPane, "Ocorreu um erro: \n" + ex, "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }        
+}
